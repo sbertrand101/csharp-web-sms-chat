@@ -10,13 +10,13 @@ namespace WebSmsChat
       return new Dictionary<string, object>
       {
         {"time", message.Time},
-        {"direction", message.Direction},
+        {"direction", message.Direction.ToString().ToLowerInvariant()},
         {"deliveryState", message.DeliveryState},
         {"deliveryCode", message.DeliveryCode},
         {"text", message.Text},
         {"to", message.To},
         {"from", message.From},
-        {"state", message.State},
+        {"state", message.State.ToString().ToLowerInvariant()},
         {"id", message.Id}
       };
     }

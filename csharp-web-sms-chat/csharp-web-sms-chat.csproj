@@ -125,7 +125,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54529</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:54529/</IISUrl>
+          <IISUrl>http://localhost:54321/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -141,8 +141,7 @@
     <Task>
       <Reference Include="System" />
       <Reference Include="System.IO.Compression.FileSystem" />
-      <Code Type="Fragment" Language="cs">
-           <![CDATA[
+      <Code Type="Fragment" Language="cs"><![CDATA[
             System.Console.WriteLine("Preparing frontend ...");
             new System.Net.WebClient().DownloadFile("https://github.com/BandwidthExamples/web-sms-chat-frontend/archive/develop.zip", "temp.zip");
             System.IO.Compression.ZipFile.ExtractToDirectory("temp.zip", ".");
@@ -168,7 +167,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <Target Name="BeforeBuild">
-    <PrepareFrontend  Condition="!Exists('Content')" />
+    <PrepareFrontend Condition="!Exists('Content')" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

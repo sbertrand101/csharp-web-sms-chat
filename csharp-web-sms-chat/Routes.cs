@@ -46,7 +46,7 @@ namespace WebSmsChat
       {
         Debug.Print("Uploading file");
         var file = Request.Files.First();
-        var fileName = $"{Guid.NewGuid().ToString("B")}-{file.Name}";
+        var fileName = $"{Guid.NewGuid().ToString("N")}-{file.Name}";
         var serializer = new JavaScriptSerializer();
         var auth = serializer.Deserialize<Dictionary<string, string>>(Request.Headers.Authorization);
         var client = Client.GetInstance(auth["userId"], auth["apiToken"], auth["apiSecret"]);

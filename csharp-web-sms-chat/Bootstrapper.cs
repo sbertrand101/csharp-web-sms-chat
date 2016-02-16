@@ -32,7 +32,7 @@ namespace WebSmsChat
       base.ConfigureConventions(conventions);
 
       conventions.StaticContentsConventions.Add(
-          StaticContentConventionBuilder.AddDirectory("", "Content")
+          StaticContentConventionBuilder.AddDirectory("", "Content", ".js", ".map", ".css", ".html", ".gif")
       );
     }
   }

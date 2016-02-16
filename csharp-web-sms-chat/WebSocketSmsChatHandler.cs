@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Bandwidth.Net;
@@ -44,9 +45,10 @@ namespace WebSmsChat
         Debug.Print("Invalid json format of {0}: {1}", json, ex.Message);
         return;
       }
-      var command = (string)message["command"];
+      var command = (string)message["Command"];
+      var messageId = Convert.ToString(message["Id"], CultureInfo.InvariantCulture);
       Action<Exception> sendError = err => {
-         _client.EmitEvent( $"{command}.error.{message["id"]}", new Dictionary<string, object>() { {"message", err.Message }});
+         _client.EmitEvent( $"{command}.error.{messageId}", new Dictionary<string, object>() { {"message", err.Message }});
       };
       Func<Dictionary<string, object>, WebSocketHandler, Task<object>> handler;
       if (Commands.TryGetValue(command, out handler))
@@ -58,8 +60,8 @@ namespace WebSmsChat
             sendError(t.Exception.InnerExceptions.First());
             return;
           }
-          _client.EmitEvent($"{command}.success.{message["id"]}", t.Result);
-        }).Start();
+          _client.EmitEvent($"{command}.success.{messageId}", t.Result);
+        });
       }
       else
       {
@@ -82,8 +84,8 @@ namespace WebSmsChat
 
     private static Client GetCatapultClient(Dictionary<string, object> message)
     {
-      var auth = (IDictionary<string, object>) message["auth"];
-      return Client.GetInstance((string)auth["userId"], (string)auth["apiToken"], (string)auth["apiSecret"]);
+      var auth = (IDictionary<string, object>) message["Auth"];
+      return Client.GetInstance((string)auth["UserId"], (string)auth["ApiToken"], (string)auth["ApiSecret"]);
     }
 
     private static readonly Dictionary<string, Func<Dictionary<string, object>, WebSocketHandler, Task<object>>> Commands = new Dictionary<string, Func<Dictionary<string, object>, WebSocketHandler, Task<object>>>
@@ -93,19 +95,19 @@ namespace WebSmsChat
        */
       { "signIn", async (message, socket) =>
         {
-          message["auth"] = message["data"];
+          message["Auth"] = message["Data"];
           var client = GetCatapultClient(message);
           var baseUrl = new UriBuilder(socket.WebSocketContext.RequestUri) {Path = "/"};
-          var applicationName = $"web-sms-chat on ${baseUrl.Host}";
-          var userId = (string)((Dictionary<string, object>) message["auth"])["userId"];
+          var applicationName = $"web-sms-chat on {baseUrl.Host}";
+          var userId = (string)((Dictionary<string, object>) message["Auth"])["UserId"];
           Debug.Print("Getting application id");
           var application = (await Application.List(client, 0, 1000)).FirstOrDefault(a => a.Name == applicationName);
           if (application == null)
           {
-            application = await Application.Create(new Dictionary<string, object>
+            application = await Application.Create(client, new Dictionary<string, object>
             {
               {"name", applicationName},
-              {"incomingMessageUrl", $"{baseUrl}/${userId}/callback" }
+              {"incomingMessageUrl", $"{baseUrl}{userId}/callback" }
             });
           }
           Debug.Print("Getting phone number");
@@ -140,21 +142,21 @@ namespace WebSmsChat
       {"getMessages", async (message, socket) =>
         {
           var client = GetCatapultClient(message);
-          var data = (Dictionary<string, object>) message["data"];
+          var data = (Dictionary<string, object>) message["Data"];
           var outMessages = await Message.List(client, new Dictionary<string, object>
           {
             {"size", 1000},
             {"direction", "out"},
-            {"from", data["phoneNumber"]}
+            {"from", data["PhoneNumber"]}
           });
           var inMessages = await Message.List(client, new Dictionary<string, object>
           {
             {"size", 1000},
             {"direction", "in"},
-            {"to", data["phoneNumber"]}
+            {"to", data["PhoneNumber"]}
           });
           var messages = inMessages.Concat(outMessages).OrderBy(m => m.Time).Select(m=>m.ToDictionary());
-          var userId = (string)((Dictionary<string, object>) message["auth"])["userId"];
+          var userId = (string)((Dictionary<string, object>) message["Auth"])["UserId"];
           socket.WebSocketContext.Items["userId"] = userId;
           return messages;
         }
@@ -166,9 +168,9 @@ namespace WebSmsChat
       {"sendMessage", async (message, socket) =>
         {
           var client = GetCatapultClient(message);
-          var data = (Dictionary<string, object>) message["data"];
+          var data = (Dictionary<string, object>) message["Data"];
           var newMessage = await Message.Create(client, data);
-          var userId = (string)((Dictionary<string, object>) message["auth"])["userId"];
+          var userId = (string)((Dictionary<string, object>) message["Auth"])["UserId"];
           socket.WebSocketContext.Items["userId"] = userId;
           return newMessage.ToDictionary();
         }

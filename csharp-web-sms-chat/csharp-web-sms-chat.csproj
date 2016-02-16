@@ -135,18 +135,28 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <UsingTask TaskName="DownloadAndExtractContent" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+  <UsingTask TaskName="PrepareFrontend" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
-      <Address ParameterType="System.String" Required="true" />
     </ParameterGroup>
     <Task>
       <Reference Include="System" />
       <Reference Include="System.IO.Compression.FileSystem" />
-      <Code Type="Fragment" Language="cs"><![CDATA[
-            new System.Net.WebClient().DownloadFile(Address, "temp.zip");
+      <Code Type="Fragment" Language="cs">
+           <![CDATA[
+            System.Console.WriteLine("Preparing frontend ...");
+            new System.Net.WebClient().DownloadFile("https://github.com/BandwidthExamples/web-sms-chat-frontend/archive/develop.zip", "temp.zip");
             System.IO.Compression.ZipFile.ExtractToDirectory("temp.zip", ".");
             System.IO.Directory.Move("web-sms-chat-frontend-develop", "Content");
             System.IO.File.Delete("temp.zip");
+            System.IO.Directory.CreateDirectory("temp");
+            new System.Net.WebClient().DownloadFile("https://nodejs.org/dist/v4.3.0/win-x86/node.exe", "temp/node.exe");
+            new System.Net.WebClient().DownloadFile("https://github.com/npm/npm/archive/v2.14.19.zip", "temp/npm.zip");
+            System.IO.Compression.ZipFile.ExtractToDirectory("temp/npm.zip", "temp");
+            System.IO.Directory.SetCurrentDirectory("Content");
+            System.Diagnostics.Process.Start("..\\temp\\node.exe", "..\\temp\\npm-2.14.19\\cli.js install").WaitForExit();
+            System.Diagnostics.Process.Start("..\\temp\\node.exe", "..\\temp\\npm-2.14.19\\cli.js run build").WaitForExit();
+            System.IO.Directory.SetCurrentDirectory("..");
+            System.IO.Directory.Delete("temp", true);
         ]]></Code>
     </Task>
   </UsingTask>
@@ -158,7 +168,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <Target Name="BeforeBuild">
-    <DownloadAndExtractContent Address="https://github.com/BandwidthExamples/web-sms-chat-frontend/archive/develop.zip" Condition="!Exists('Content')" />
+    <PrepareFrontend  Condition="!Exists('Content')" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

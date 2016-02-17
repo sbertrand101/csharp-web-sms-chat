@@ -17,7 +17,8 @@ namespace WebSmsChat
         {"to", message.To},
         {"from", message.From},
         {"state", message.State.ToString().ToLowerInvariant()},
-        {"id", message.Id}
+        {"id", message.Id},
+        {"media", message.Media }
       };
     }
   }

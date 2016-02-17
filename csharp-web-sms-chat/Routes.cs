@@ -49,7 +49,7 @@ namespace WebSmsChat
         var fileName = $"{Guid.NewGuid().ToString("N")}-{file.Name}";
         var serializer = new JavaScriptSerializer();
         var auth = serializer.Deserialize<Dictionary<string, string>>(Request.Headers.Authorization);
-        var client = Client.GetInstance(auth["userId"], auth["apiToken"], auth["apiSecret"]);
+        var client = Client.GetInstance(auth["UserId"], auth["ApiToken"], auth["ApiSecret"]);
         await Media.Upload(client, fileName, file.Value, file.ContentType);
         return new Dictionary<string, string>
         {

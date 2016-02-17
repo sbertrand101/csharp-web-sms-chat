@@ -150,7 +150,8 @@
     <Task>
       <Reference Include="System" />
       <Reference Include="System.IO.Compression.FileSystem" />
-      <Code Type="Fragment" Language="cs"><![CDATA[
+      <Code Type="Fragment" Language="cs">
+              <![CDATA[
             System.Console.WriteLine("Preparing frontend ...");
             new System.Net.WebClient().DownloadFile("https://github.com/BandwidthExamples/web-sms-chat-frontend/archive/develop.zip", "temp.zip");
             System.IO.Compression.ZipFile.ExtractToDirectory("temp.zip", ".");
@@ -161,8 +162,20 @@
             new System.Net.WebClient().DownloadFile("https://github.com/npm/npm/archive/v2.14.19.zip", "temp/npm.zip");
             System.IO.Compression.ZipFile.ExtractToDirectory("temp/npm.zip", "temp");
             System.IO.Directory.SetCurrentDirectory("Content");
-            System.Diagnostics.Process.Start("..\\temp\\node.exe", "..\\temp\\npm-2.14.19\\cli.js install").WaitForExit();
-            System.Diagnostics.Process.Start("..\\temp\\node.exe", "..\\temp\\npm-2.14.19\\cli.js run build").WaitForExit();
+            var process = new System.Diagnostics.Process();
+            process.StartInfo.FileName = "..\\temp\\node.exe";
+            process.StartInfo.Arguments = "..\\temp\\npm-2.14.19\\cli.js install";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+            process.WaitForExit();
+            process = new System.Diagnostics.Process();
+            process.StartInfo.FileName = "..\\temp\\node.exe";
+            process.StartInfo.Arguments = "..\\temp\\npm-2.14.19\\cli.js run build";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+            process.WaitForExit();
             System.IO.Directory.SetCurrentDirectory("..");
             System.IO.Directory.Delete("temp", true);
         ]]></Code>

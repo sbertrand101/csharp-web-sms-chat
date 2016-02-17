@@ -35,7 +35,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <FilesToIncludeForPublish>AllFilesInProjectFolder</FilesToIncludeForPublish>
+    <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
     <PublishDatabases>false</PublishDatabases>
     <ExcludeGeneratedDebugSymbol>true</ExcludeGeneratedDebugSymbol>
   </PropertyGroup>
@@ -177,6 +177,10 @@
   </Target>
   <Target Name="BeforeBuild">
     <PrepareFrontend Condition="!Exists('Content')" />
+  </Target>
+  <Target Name="AdditionalFilesForPackage" AfterTargets="CopyAllFilesToSingleFolderForMsdeploy">
+    <MakeDir Directories="$(_PackageTempDir)\Content"/>
+    <Exec Command="xcopy.exe  Content $(_PackageTempDir)\Content /e /y" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

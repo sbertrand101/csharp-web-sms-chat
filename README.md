@@ -21,3 +21,19 @@ C# backend for web-based chat application that features Catapult SMS and MMS cap
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
+
+### Locally
+
+Clone the web application.
+
+```console
+git clone https://github.com/BandwidthExamples/csharp-web-sms-chat.git
+```
+
+Open solution file in Visual Studio and build it.
+
+You can run compiled C# code with IIS Express on local machine if you have ability to handle external requests or use any external hosting (like Azure).
+
+Note: If you are going to use Azure as hosting please after deployment open this site in [Azure Management Console](https://manage.windowsazure.com/), select app settings and switch on `Web Sockets`. Otherwise the app will not work correctly.
+
+

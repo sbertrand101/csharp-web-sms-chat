@@ -35,7 +35,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
+    <FilesToIncludeForPublish>AllFilesInProjectFolder</FilesToIncludeForPublish>
     <PublishDatabases>false</PublishDatabases>
     <ExcludeGeneratedDebugSymbol>true</ExcludeGeneratedDebugSymbol>
   </PropertyGroup>
@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\websmsapp - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\websmschat - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -150,8 +151,7 @@
     <Task>
       <Reference Include="System" />
       <Reference Include="System.IO.Compression.FileSystem" />
-      <Code Type="Fragment" Language="cs">
-              <![CDATA[
+      <Code Type="Fragment" Language="cs"><![CDATA[
             System.Console.WriteLine("Preparing frontend ...");
             new System.Net.WebClient().DownloadFile("https://github.com/BandwidthExamples/web-sms-chat-frontend/archive/develop.zip", "temp.zip");
             System.IO.Compression.ZipFile.ExtractToDirectory("temp.zip", ".");
@@ -189,10 +189,12 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <Target Name="BeforeBuild">
+    <Message Text="Building frontend ..." Importance="high" Condition="!Exists('Content')" />
     <PrepareFrontend Condition="!Exists('Content')" />
   </Target>
-  <Target Name="AdditionalFilesForPackage" AfterTargets="CopyAllFilesToSingleFolderForMsdeploy">
-    <MakeDir Directories="$(_PackageTempDir)\Content"/>
+  <Target Name="AdditionalFilesForPackage" AfterTargets="CopyAllFilesToSingleFolderForPackage;CopyAllFilesToSingleFolderForMsdeploy">
+    <Message Text="Copy frontend ..." Importance="high" />
+    <MakeDir Directories="$(_PackageTempDir)\Content" />
     <Exec Command="xcopy.exe  Content $(_PackageTempDir)\Content /e /y" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

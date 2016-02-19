@@ -7,6 +7,7 @@ using System.Text;
 using Bandwidth.Net;
 using Bandwidth.Net.Model;
 using Microsoft.Web.WebSockets;
+using Nancy;
 using Nancy.AspNet.WebSockets;
 using Nancy.Json;
 
@@ -56,6 +57,7 @@ namespace WebSmsChat
           {"fileName", fileName}
         };
       };
+
     }
   }
 }

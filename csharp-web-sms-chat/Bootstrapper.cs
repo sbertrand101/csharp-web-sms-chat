@@ -37,20 +37,6 @@ namespace WebSmsChat
       conventions.StaticContentsConventions.Add(
         StaticContentConventionBuilder.AddDirectory("", "Content", ".js", ".map", ".css", ".html", ".gif")
         );
-      conventions.StaticContentsConventions.Add((ctx, root) =>
-      {
-        if (ctx.Request.Path != "/vendor.js") return null;
-
-        var fileName = Path.GetFullPath(Path.Combine(root, "Content", "vendor.js.gz"));
-        if (File.Exists(fileName))
-        {
-          var response =  new GenericFileResponse(fileName, ctx);
-          response.Headers.Add("Content-Encoding", "gzip");
-          response.Headers.Add("Content-Type", "application/javascript");
-          return response;
-        }
-        return null;
-      });
     }
   }
 }

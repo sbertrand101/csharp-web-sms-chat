@@ -154,31 +154,10 @@
       <Code Type="Fragment" Language="cs">
               <![CDATA[
             System.Console.WriteLine("Preparing frontend ...");
-            new System.Net.WebClient().DownloadFile("https://github.com/BandwidthExamples/web-sms-chat-frontend/archive/develop.zip", "temp.zip");
-            System.IO.Compression.ZipFile.ExtractToDirectory("temp.zip", ".");
-            System.IO.Directory.Move("web-sms-chat-frontend-develop", "Content");
+            System.IO.Directory.CreateDirectory("Content");
+            new System.Net.WebClient().DownloadFile("https://github.com/BandwidthExamples/web-sms-chat-frontend/releases/download/v1.0/web-sms-chat-frontend.zip", "temp.zip");
+            System.IO.Compression.ZipFile.ExtractToDirectory("temp.zip", "Content");
             System.IO.File.Delete("temp.zip");
-            System.IO.Directory.CreateDirectory("temp");
-            new System.Net.WebClient().DownloadFile("https://nodejs.org/dist/v4.3.0/win-x86/node.exe", "temp/node.exe");
-            new System.Net.WebClient().DownloadFile("https://github.com/npm/npm/archive/v2.14.19.zip", "temp/npm.zip");
-            System.IO.Compression.ZipFile.ExtractToDirectory("temp/npm.zip", "temp");
-            System.IO.Directory.SetCurrentDirectory("Content");
-            var process = new System.Diagnostics.Process();
-            process.StartInfo.FileName = "..\\temp\\node.exe";
-            process.StartInfo.Arguments = "..\\temp\\npm-2.14.19\\cli.js install";
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.Start();
-            process.WaitForExit();
-            process = new System.Diagnostics.Process();
-            process.StartInfo.FileName = "..\\temp\\node.exe";
-            process.StartInfo.Arguments = "..\\temp\\npm-2.14.19\\cli.js run build";
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.Start();
-            process.WaitForExit();
-            System.IO.Directory.SetCurrentDirectory("..");
-            System.IO.Directory.Delete("temp", true);
         ]]></Code>
     </Task>
   </UsingTask>

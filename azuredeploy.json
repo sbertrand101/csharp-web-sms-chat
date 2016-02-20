@@ -35,7 +35,7 @@
           ],
           "properties": {
             "RepoUrl": "https://github.com/BandwidthExamples/csharp-web-sms-chat.git",
-            "branch": "develop",
+            "branch": "master",
             "IsManualIntegration": true
           }
         },

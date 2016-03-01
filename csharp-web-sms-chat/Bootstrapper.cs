@@ -6,6 +6,8 @@ using Nancy.Bootstrapper;
 using Nancy.Conventions;
 using Nancy.Responses;
 using Nancy.TinyIoc;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace WebSmsChat
 {
@@ -14,7 +16,7 @@ namespace WebSmsChat
     protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
     {
       var staticFiles = new[]
-      {"/smschat", "/index.html", "/config.js", "/vendor.js", "/app/", "/styles/", "/node_modules/"};
+      {"/smschat", "/index.html", "/config.js", "/build.", "/vendor/", "/app/", "/styles/", "/jspm_packages/", "/node_modules/", "/sounds/"};
       pipelines.BeforeRequest += c =>
       {
         //SPA support
@@ -37,10 +39,10 @@ namespace WebSmsChat
       conventions.StaticContentsConventions.Add((ctx, root) =>
       {
         string fileName;
-        if (ctx.Request.Path == "/vendor.js")
+        if (ctx.Request.Path == "/build.js")
         {
-          //return compressed version of vendor.js (as vendor.js.gz)
-          fileName = Path.GetFullPath(Path.Combine(root, "Content", "vendor.js.gz"));
+          //return compressed version of build.js (as build.js.gz)
+          fileName = Path.GetFullPath(Path.Combine(root, "Content", "build.js.gz"));
           if (File.Exists(fileName))
           {
             var response = new GenericFileResponse(fileName, ctx);
@@ -57,5 +59,13 @@ namespace WebSmsChat
         return null;
       });
     }
+  }
+
+  public class UserInfo
+  {
+    public string ApiToken;
+    public string ApiSecret;
+    public int Counter;
+    public readonly ConcurrentDictionary<string, string> ActiveCalls = new ConcurrentDictionary<string, string>();
   }
 }

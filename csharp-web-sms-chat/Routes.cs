@@ -83,7 +83,7 @@ namespace WebSmsChat
       var fromNumber = data.From;
       Debug.Print("Current leg: {0} -> {1}", fromNumber, toNumber);
       var m = regex.Match(data.From);
-      if (m != null && m.Groups.Count > 0)
+      if (m != null && m.Groups.Count > 1)
       {
         //outgoing call from web ui
         fromNumber = $"+{m.Groups[1]}";
@@ -91,7 +91,7 @@ namespace WebSmsChat
       else {
         //incoming call
         fromNumber = data.To;
-        toNumber = $"sip:chat-${data.To.Substring(1)}@${sipDomain}";
+        toNumber = $"sip:chat-{data.To.Substring(1)}@{sipDomain}";
       }
       var currentCall = await Call.Get(client, data.CallId);
       UserInfo user;

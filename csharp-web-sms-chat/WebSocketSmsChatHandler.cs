@@ -20,7 +20,7 @@ namespace WebSmsChat
     {
       UserInfo user;
       var userId = (string)_client.WebSocketContext.Items["userId"];
-      if (ActiveUsers.TryGetValue(userId, out user))
+      if (userId != null && ActiveUsers.TryGetValue(userId, out user))
       {
         Interlocked.Decrement(ref user.Counter);
         if (user.Counter == 0)
@@ -136,8 +136,8 @@ namespace WebSmsChat
       {
         return;
       }
-      var auth = (Dictionary<string, string>)message["Auth"];
-      var userId = auth["UserId"];
+      var auth = (Dictionary<string, object>)message["Auth"];
+      var userId = (string)auth["UserId"];
       socket.WebSocketContext.Items["userId"] = userId;
       UserInfo user;
       if (ActiveUsers.TryGetValue(userId, out user))
@@ -148,8 +148,8 @@ namespace WebSmsChat
       {
         user = new UserInfo
         {
-          ApiToken = auth["ApiToken"],
-          ApiSecret = auth["ApiSecret"],
+          ApiToken = (string)auth["ApiToken"],
+          ApiSecret = (string)auth["ApiSecret"],
           Counter = 1
         };
         ActiveUsers.TryAdd(userId, user);

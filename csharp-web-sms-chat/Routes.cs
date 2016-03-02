@@ -11,16 +11,14 @@ using Microsoft.Web.WebSockets;
 using Nancy;
 using Nancy.AspNet.WebSockets;
 using Nancy.Json;
-using Nancy.TinyIoc;
 using System.Text.RegularExpressions;
 
 namespace WebSmsChat
 {
   public class Routes : WebSocketNancyModule
   {
-    public Routes(TinyIoCContainer container)
+    public Routes()
     {
-      var activeUsers = WebSocketSmsChatHandler.ActiveUsers;
       WebSocket["/smschat"] = _ => new WebSocketSmsChatHandler();
 
       Post["/{userId}/{source}/callback", true] = async (c, t) =>

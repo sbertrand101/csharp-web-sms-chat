@@ -1,6 +1,6 @@
 <div align="center">
 
-# CSharp Web SMS Chat
+# C Sharp Web SMS Chat
 
 <a href="http://dev.bandwidth.com"><img src="https://s3.amazonaws.com/bwdemos/BW_Messaging.png"/></a>
 </div>

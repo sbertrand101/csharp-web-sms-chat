@@ -5,6 +5,11 @@
 <a href="http://dev.bandwidth.com"><img src="https://s3.amazonaws.com/bwdemos/BW_Messaging.png"/></a>
 </div>
 
+
+<div align="center"> 
+<b>This application is outdated, but will be updated soon!</b><br><br>
+</div> 
+
 C# backend for web-based chat application that features Catapult SMS and MMS capabilities
 
 * [Creating Application](http://ap.bandwidth.com/docs/rest-api/applications/?utm_medium=social&utm_source=github&utm_campaign=dtolb&utm_content=_)
